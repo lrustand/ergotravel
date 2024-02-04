@@ -14,15 +14,24 @@
 (def dark-grey (partial color [0.25 0.25 0.25]))
 (def light-grey (partial color [0.75 0.75 0.75 0.4]))
 
+
+(defn my-extrude
+  "Extrude shape along Z axis, and place it at relative 0."
+  [height & args]
+
+  (translate [0 0 (/ height 2)]
+             (apply extrude-linear {:height height} args)))
+
+
 ;; Dimensions are taken from the svg
 (defn place-screws
-  "Places all `screws`"
+  "Places all `screw`s"
   [screw]
   (map (fn [pos]
          (translate pos screw))
 
        ;; Leftmost holes
-       [[18.9 -25.77]
+       [[18.90 -25.77]
         [23.37 -63.97]
 
         [53.24 -22.37]
@@ -35,35 +44,45 @@
         [114.19 -25.77]
         [114.19 -63.97]]))
 
+
 (def screw
+  "Screw shape"
   (binding [*fn* 100]
     (cylinder 1.3 100)))
 
+
 (def standoff
+  "The stud around the screwhole"
   (binding [*fn* 100]
     (cylinder 2 100)))
 
+
 (def standoffs
+  "Standoffs"
   (place-screws standoff))
 
+
 (def screwholes
+  "Screwholes"
   (place-screws screw))
+
 
 ;; Outline of the keyboard chassis
 ;; Dimensions are taken from the svg
 (def outline
+  "A 2D shape of the outline of the keyboard."
   (polygon [;; Upper right corner
-            [133.2 -7.52]
+            [133.20 -7.52]
             [132.57 -6.87]
-            
+
             ;; Slight bend
             [91.99 0.0]
 
             ;; Upper left corner
-            [3.1 0.0]
+            [3.10  0.0]
             [2.04 -0.19]
             [0.41 -1.55]
-            [0.0 -2.55]
+            [0.00 -2.55]
 
             ;; Thumb to left edge
             [0.0 -56.44]
@@ -83,30 +102,40 @@
             [130.09 -84.3]
             [131.16 -84.12]
             [132.78 -82.75]
-            [133.2 -81.2]]))
+            [133.20 -81.2]]))
 
+
+;; TODO Fix dimensions
 (def trrs-cutout
-  (extrude-linear {:height 10}
+  "Cutout for the TRRS connector connecting the two halves."
+
+  (my-extrude 5
     (polygon
      [[0 -1.33]
       [0 -9.85]
       [18.8 -9.85]
       [18.8 -1.33]])))
 
+
 ;; Might not be needed
 (def usb-cutout)
 (def battery-cutout)
 
+
 ;; TODO fix X pos + width
 (def arduino-cutout
-  (extrude-linear {:height 10}
+  "Cutout for the microcontroller."
+
+  (my-extrude 100
     (polygon
      [[73.955 -40.83]
       [55.395 -40.83]
       [55.395 4.3]
       [73.955 4.3]])))
 
+
 (def col-offsets
+  "Y-axis offsets for each column."
   [19.725
    15.037
    12.664
@@ -115,28 +144,40 @@
    34.303
    36.611])
 
+
 ;; Why are these not the same??
 (def key-spacing-x 19.05)
 (def key-spacing-y 19.04)
 
+
 (def switch
+  "A single MX switch."
+
+  (let [bottom-width 14
+        bottom-height 6
+        top-width 8]
   (hull
-    (translate [0 0 6] (cube 8 8 5))
-    (cube 14 14 5)))
+    (translate [0 0 bottom-height] (cube top-width top-width 1))
+    (cube bottom-width bottom-width bottom-height))))
+
 
 (defn switch-cutout
   "Cutout for switch."
   [& {:keys [size]
+
       :or {size :1u}}]
   (case size
     :1u (cube 14 14 14)
     :2uh (cube 14 33.5 14)))
+
 
 (defn keycap-angle
   "Return the angle for the top face of keycap based on row"
   [row]
   (nth [-10 -3 6] row))
 
+
+;; TODO Make actual keycap profile
 (defn keycap
   "Generate a keycap of the given size and row."
   [& {:keys [row
@@ -175,6 +216,7 @@
                       (cube top-width top-height 1)))
    (cube bottom-width bottom-height 1)))
 
+
 (defn place-main-keys
   "Given a shape `key`, places all the main finger keys.
 See `place-thumb-keys` for placement of the thumb keys.
@@ -196,15 +238,16 @@ If `key` is a function it is called with the keywords
         (apply key [:row (+ 2 ny) :col nx])
         key)))))
 
+
 (defn place-thumb-keys
   "Given a shape `key`, places all the thumb keys.
 See `place-main-keys` for placement of the finger keys.
 
 If `key` is a function it is called with the keyword `row`=2."
   [inner-key outer-key]
-  
+
   ;; Move both keys to correct row
-  (translate [9.45 -72.05] 
+  (translate [9.45 -72.05]
    ;; Inner thumb key
    (translate [31.4475 0]
      (rotate [0 0 (to-radians 10)]
@@ -218,13 +261,15 @@ If `key` is a function it is called with the keyword `row`=2."
          (apply outer-key [:row 2])
          outer-key)))))
 
+
 (def keycaps
   "All the keycaps."
   (union
     (place-thumb-keys (partial keycap :size :1.5u)
                       (partial keycap :size :2uh))
     (place-main-keys keycap)))
-   
+
+
 (def switches
   "All the switches."
   (union
@@ -232,69 +277,105 @@ If `key` is a function it is called with the keyword `row`=2."
                       switch)
     (place-main-keys switch)))
 
+
 (def switches-cutout
   "Cutouts for all the switches."
+
   (union
     (place-thumb-keys switch-cutout
-                      switch-cutout)
+                      (partial switch-cutout :size :2uh))
     (place-main-keys switch-cutout)))
+
+
+(def pcb-height 1.5)
+(def pcb
+  (my-extrude pcb-height
+    outline))
+
 
 (def bottom-tilt (to-radians 8))
 
+
 (def bottom-casing
   "The bottom part of the casing, with all cutouts."
-  (difference
-    (rotate [bottom-tilt 0 0]
-      (difference
-       (extrude-linear {:height 30}
-         outline)
-       (translate [0 0 13.5]
+
+  (let [height 15 ;; Number pulled out of arse
+        recess 1.5]
+
+    (difference
+      ;; Rotate the whole bottom-casing
+      (rotate [bottom-tilt 0 0]
+        (difference
+         (my-extrude height
+           outline)
+
          ;; The recessed area inside the case
          ;; with studs around the screwholes
-         (difference
-          (translate [1.35 -1.7 1.5]
-           (scale [0.98 0.96 1]
-                  (extrude-linear {:height 4}
-                    outline)))
-          standoffs)
-         arduino-cutout
-         trrs-cutout
-         screwholes)))
-    (translate [0 0 -500]
-    (cube 1000 1000 1000))))
+         (translate [0 0 height]
+           (difference
+            (translate [1.35 -1.7 (- recess)]
+             (scale [0.98 0.96 1]
+                    (my-extrude (+ 0.01 recess)
+                      outline)))
+            standoffs)
 
+           ;; Flip cutouts upside down (make height negative)
+           (scale [1 1 -1] arduino-cutout
+                           trrs-cutout)
+           screwholes)))
+
+      ;; Cut off the bottom to shape it into a wedge
+      (translate [-20 -100 -50]
+      (cube 170 100 50 :center false)))))
+
+
+;; TODO make bottom and top not be mirrored of each other
 (def top-casing
   "The top part of the casing, with all cutouts."
-  (difference
-   (extrude-linear {:height 5}
-     outline)
-   (difference
-    (translate [1.35 -1.7 1.5]
-     (scale [0.98 0.96 1]
-            (extrude-linear {:height 4}
-              outline)))
-    standoffs)
-   switches-cutout
-   screwholes))
+
+  (let [height 5
+        plate-thickness 1.5]
+    (difference
+     ;; The main body of the top-casing
+     (my-extrude height
+       outline)
+
+     ;; The recessed area inside the case
+     ;; with studs around the screwholes
+     (difference
+      (translate [1.35 -1.7 plate-thickness]
+       (scale [0.98 0.96 1]
+              (my-extrude height
+                outline)))
+      standoffs)
+
+     ;; Cutouts
+     switches-cutout
+     screwholes)))
+
 
 (def assembled
   "Fully assembled keyboard with all parts installed.
   Not suitable for print, should be used for previewing."
+
   (union
-   bottom-casing
+   (dark-grey bottom-casing)
    (rotate [bottom-tilt 0 0]
-   (translate [0 0 15]
-              (scale [1 1 -1] top-casing)
-              (light-grey
-               (translate [0 0 3]
-                          switches))
-              (translate [0 0 10]
-                         keycaps)))))
+     (translate [0 0 20]
+                (scale [1 1 -1] (dark-grey top-casing))
+                (light-grey
+                 (translate [0 0 0]
+                            switches))
+                (dark-grey
+                 (translate [0 0 6]
+                            keycaps))))))
+
 
 (def out
   "The shape to render."
   (union
    assembled))
+
 
 (defn -main
   "Converts the shape defined in `out` to openscad and saves it to `ergotravel.scad`"
