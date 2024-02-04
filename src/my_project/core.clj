@@ -15,7 +15,9 @@
 (def light-grey (partial color [0.75 0.75 0.75 0.4]))
 
 ;; Dimensions are taken from the svg
-(defn place-screws [screw]
+(defn place-screws
+  "Places all `screws`"
+  [screw]
   (map (fn [pos]
          (translate pos screw))
 
@@ -173,8 +175,14 @@
                       (cube top-width top-height 1)))
    (cube bottom-width bottom-height 1)))
 
+(defn place-main-keys
+  "Given a shape `key`, places all the main finger keys.
+See `place-thumb-keys` for placement of the thumb keys.
 
-(defn place-main-keys [key]
+If `key` is a function it is called with the keywords
+`row`, `col`."
+  [key]
+
   (translate [9.45 0]
   (for [nx (range 0 7)
         ny (range -2 1)
@@ -188,8 +196,13 @@
         (apply key [:row (+ 2 ny) :col nx])
         key)))))
 
+(defn place-thumb-keys
+  "Given a shape `key`, places all the thumb keys.
+See `place-main-keys` for placement of the finger keys.
 
-(defn place-thumb-keys [inner-key outer-key]
+If `key` is a function it is called with the keyword `row`=2."
+  [inner-key outer-key]
+  
   ;; Move both keys to correct row
   (translate [9.45 -72.05] 
    ;; Inner thumb key
@@ -206,25 +219,28 @@
          outer-key)))))
 
 (def keycaps
+  "All the keycaps."
   (union
     (place-thumb-keys (partial keycap :size :1.5u)
                       (partial keycap :size :2uh))
     (place-main-keys keycap)))
    
 (def switches
+  "All the switches."
   (union
     (place-thumb-keys switch
                       switch)
     (place-main-keys switch)))
 
 (def switches-cutout
+  "Cutouts for all the switches."
   (union
     (place-thumb-keys switch-cutout
                       switch-cutout)
     (place-main-keys switch-cutout)))
 
-;; The bottom part of the casing, with all cutouts
 (def bottom-casing
+  "The bottom part of the casing, with all cutouts."
   (difference
    (extrude-linear {:height 5}
      outline)
@@ -238,8 +254,8 @@
    trrs-cutout
    screwholes))
 
-;; The top part of the casing, with all cutouts
 (def top-casing
+  "The top part of the casing, with all cutouts."
   (difference
    (extrude-linear {:height 5}
      outline)
@@ -253,6 +269,8 @@
    screwholes))
 
 (def assembled
+  "Fully assembled keyboard with all parts installed.
+  Not suitable for print, should be used for previewing."
   (union
    bottom-casing
    (translate [0 0 5]
@@ -264,10 +282,12 @@
               keycaps)))
 
 (def out
+  "The shape to render."
   (union
    assembled))
 
 (defn -main
+  "Converts the shape defined in `out` to openscad and saves it to `ergotravel.scad`"
   [& args]
   (spit "ergotravel.scad"
         (write-scad out)))
