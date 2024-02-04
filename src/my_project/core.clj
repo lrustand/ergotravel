@@ -118,10 +118,29 @@
 (def key-spacing-y 19.04)
 
 (def switch
+  (hull
+    (translate [0 0 6] (cube 8 8 5))
+    (cube 14 14 5)))
+
+(def switch-cutout
   (cube 14 14 14))
 
-(def switch-2u
+(def switch-cutout-2u
   (cube 14 33.5 14))
+
+(def keycap
+  (hull
+   (translate [0 1/2 6]
+     (rotate [(to-radians 5) 0 0]
+             (cube 12 12 1)))
+   (cube 16 16 1)))
+
+(def keycap-2u
+  (hull
+   (translate [0 0 6]
+     (rotate [(to-radians 5) 0 0]
+             (cube 12 30 1)))
+   (cube 16 35 1)))
 
 (defn place-main-keys [key]
   (translate [9.45 0]
@@ -146,18 +165,25 @@
      (rotate [0 0 (to-radians 30)]
        outer-key))))
 
-(def main-switches
-  (place-main-keys switch))
-
-(def thumb-switches
-  (place-thumb-keys switch
-                    switch-2u))
-
+(def keycaps
+  (union
+    (place-thumb-keys keycap
+                      keycap-2u)
+    (place-main-keys keycap)))
+   
 (def switches
   (union
-   thumb-switches
-   main-switches))
+    (place-thumb-keys switch
+                      switch)
+    (place-main-keys switch)))
 
+(def switches-cutout
+  (union
+    (place-thumb-keys switch-cutout
+                      switch-cutout-2u)
+    (place-main-keys switch-cutout)))
+
+;; The bottom part of the casing, with all cutouts
 (def bottom-casing
   (difference
    (extrude-linear {:height 5}
@@ -172,6 +198,7 @@
    trrs-cutout
    screwholes))
 
+;; The top part of the casing, with all cutouts
 (def top-casing
   (difference
    (extrude-linear {:height 5}
@@ -182,14 +209,19 @@
             (extrude-linear {:height 4}
               outline)))
     standoffs)
-   switches
+   switches-cutout
    screwholes))
 
 (def assembled
   (union
    bottom-casing
    (translate [0 0 5]
-     (scale [1 1 -1] top-casing))))
+              (scale [1 1 -1] top-casing))
+   (light-grey
+    (translate [0 0 8]
+               switches))
+   (translate [0 0 15]
+              keycaps)))
 
 (def out
   (union
