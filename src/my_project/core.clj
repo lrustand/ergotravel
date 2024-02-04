@@ -311,19 +311,18 @@ If `key` is a function it is called with the keyword `row`=2."
 
          ;; The recessed area inside the case
          ;; with studs around the screwholes
-         (translate [0 0 height]
-           (difference
-            (translate [1.35 -1.7 (- recess)]
-             (scale [0.98 0.96 1]
-                    (my-extrude (+ 0.01 recess)
-                      outline)))
-            standoffs)
+         (translate [0 0 (+ height 0.01)]
 
-           ;; Flip cutouts upside down (make height negative)
-           (scale [1 1 -1] arduino-cutout
-                           trrs-cutout)
+           ;; Flip recess and cutouts upside down (make height negative)
+           (scale [1 1 -1]
+             (difference
+               (my-extrude recess (offset -1 outline))
+               standoffs)
+             arduino-cutout
+             trrs-cutout)
            screwholes)))
 
+      ;; TODO Make a bounding box function to calculate this cube
       ;; Cut off the bottom to shape it into a wedge
       (translate [-20 -100 -50]
       (cube 170 100 50 :center false)))))
@@ -342,12 +341,10 @@ If `key` is a function it is called with the keyword `row`=2."
 
      ;; The recessed area inside the case
      ;; with studs around the screwholes
-     (difference
-      (translate [1.35 -1.7 plate-thickness]
-       (scale [0.98 0.96 1]
-              (my-extrude height
-                outline)))
-      standoffs)
+     (translate [0 0 plate-thickness]
+       (difference
+         (my-extrude height (offset -1 outline))
+         standoffs))
 
      ;; Cutouts
      switches-cutout
