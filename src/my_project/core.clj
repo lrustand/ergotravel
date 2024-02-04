@@ -122,25 +122,57 @@
     (translate [0 0 6] (cube 8 8 5))
     (cube 14 14 5)))
 
-(def switch-cutout
-  (cube 14 14 14))
+(defn switch-cutout
+  "Cutout for switch."
+  [& {:keys [size]
+      :or {size :1u}}]
+  (case size
+    :1u (cube 14 14 14)
+    :2uh (cube 14 33.5 14)))
 
-(def switch-cutout-2u
-  (cube 14 33.5 14))
+(defn keycap-angle
+  "Return the angle for the top face of keycap based on row"
+  [row]
+  (nth [-10 -3 6] row))
 
-(def keycap
+(defn keycap
+  "Generate a keycap of the given size and row."
+  [& {:keys [row
+             size
+             angle
+             bottom-width
+             bottom-height
+             top-width
+             top-height]
+      :or {row 1
+           size :1u
+           angle (keycap-angle row)
+           bottom-width (case size
+                          :1u 16
+                          :1.5u 24
+                          :2u 35
+                          :2uh 16)
+           bottom-height (case size
+                           :1u 16
+                           :1.5u 16
+                           :2u 16
+                           :2uh 35)
+           top-width (case size
+                       :1u 12
+                       :1.5u 20
+                       :2u 35
+                       :2uh 12)
+           top-height (case size
+                        :1u 12
+                        :1.5u 12
+                        :2u 12
+                        :2uh 30)}}]
   (hull
    (translate [0 1/2 6]
-     (rotate [(to-radians 5) 0 0]
-             (cube 12 12 1)))
-   (cube 16 16 1)))
+              (rotate [(to-radians angle) 0 0]
+                      (cube top-width top-height 1)))
+   (cube bottom-width bottom-height 1)))
 
-(def keycap-2u
-  (hull
-   (translate [0 0 6]
-     (rotate [(to-radians 5) 0 0]
-             (cube 12 30 1)))
-   (cube 16 35 1)))
 
 (defn place-main-keys [key]
   (translate [9.45 0]
@@ -151,7 +183,11 @@
               y (- (* ny key-spacing-y)
                    (get col-offsets nx))]]
 
-    (translate [x y 0] key))))
+    (translate [x y 0]
+      (if (fn? key)
+        (apply key [:row (+ 2 ny) :col nx])
+        key)))))
+
 
 (defn place-thumb-keys [inner-key outer-key]
   ;; Move both keys to correct row
@@ -159,16 +195,20 @@
    ;; Inner thumb key
    (translate [31.4475 0]
      (rotate [0 0 (to-radians 10)]
-       inner-key))
+       (if (fn? inner-key)
+         (apply inner-key [:row 2])
+         inner-key)))
    ;; Outer thumb key
    (translate [3.4775 0 0]
      (rotate [0 0 (to-radians 30)]
-       outer-key))))
+       (if (fn? outer-key)
+         (apply outer-key [:row 2])
+         outer-key)))))
 
 (def keycaps
   (union
-    (place-thumb-keys keycap
-                      keycap-2u)
+    (place-thumb-keys (partial keycap :size :1.5u)
+                      (partial keycap :size :2uh))
     (place-main-keys keycap)))
    
 (def switches
@@ -180,7 +220,7 @@
 (def switches-cutout
   (union
     (place-thumb-keys switch-cutout
-                      switch-cutout-2u)
+                      switch-cutout)
     (place-main-keys switch-cutout)))
 
 ;; The bottom part of the casing, with all cutouts
