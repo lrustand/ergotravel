@@ -35,11 +35,11 @@
 
 (def screw
   (binding [*fn* 100]
-    (cylinder 1.3 10)))
+    (cylinder 1.3 100)))
 
 (def standoff
   (binding [*fn* 100]
-    (cylinder 2 10)))
+    (cylinder 2 100)))
 
 (def standoffs
   (place-screws standoff))
