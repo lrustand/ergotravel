@@ -1,0 +1,5 @@
+* Usage
+Run =lein auto run= in the root directory of the folder. This will
+automatically generate =ergotravel.scad= which can be opened in
+openscad. Openscad will automatically re-render any time the scad file
+changes, and lein will rebuild the scad file any time the code changes.
