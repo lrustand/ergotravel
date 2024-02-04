@@ -1,0 +1,8 @@
+;;; Directory Local Variables            -*- no-byte-compile: t -*-
+;;; For more information see (info "(emacs) Directory Variables")
+
+((clojure-mode . ((eval . (add-hook 'after-save-hook
+                                    (lambda ()
+                                      (cider-eval-buffer)
+                                      (cider-run))
+                                    nil t)))))
