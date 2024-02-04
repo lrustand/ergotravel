@@ -239,20 +239,29 @@ If `key` is a function it is called with the keyword `row`=2."
                       switch-cutout)
     (place-main-keys switch-cutout)))
 
+(def bottom-tilt (to-radians 8))
+
 (def bottom-casing
   "The bottom part of the casing, with all cutouts."
   (difference
-   (extrude-linear {:height 5}
-     outline)
-   (difference
-    (translate [1.35 -1.7 1.5]
-     (scale [0.98 0.96 1]
-            (extrude-linear {:height 4}
-              outline)))
-    standoffs)
-   arduino-cutout
-   trrs-cutout
-   screwholes))
+    (rotate [bottom-tilt 0 0]
+      (difference
+       (extrude-linear {:height 30}
+         outline)
+       (translate [0 0 13.5]
+         ;; The recessed area inside the case
+         ;; with studs around the screwholes
+         (difference
+          (translate [1.35 -1.7 1.5]
+           (scale [0.98 0.96 1]
+                  (extrude-linear {:height 4}
+                    outline)))
+          standoffs)
+         arduino-cutout
+         trrs-cutout
+         screwholes)))
+    (translate [0 0 -500]
+    (cube 1000 1000 1000))))
 
 (def top-casing
   "The top part of the casing, with all cutouts."
@@ -273,13 +282,14 @@ If `key` is a function it is called with the keyword `row`=2."
   Not suitable for print, should be used for previewing."
   (union
    bottom-casing
-   (translate [0 0 5]
-              (scale [1 1 -1] top-casing))
-   (light-grey
-    (translate [0 0 8]
-               switches))
+   (rotate [bottom-tilt 0 0]
    (translate [0 0 15]
-              keycaps)))
+              (scale [1 1 -1] top-casing)
+              (light-grey
+               (translate [0 0 3]
+                          switches))
+              (translate [0 0 10]
+                         keycaps)))))
 
 (def out
   "The shape to render."
