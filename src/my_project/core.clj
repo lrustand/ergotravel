@@ -23,6 +23,20 @@
              (apply extrude-linear {:height height} args)))
 
 
+(defn my-cube
+  "An improved `cube` function. Can take either a single number as
+  dimensions, in which case `x` `y` and `z` will be the same,
+  otherwise it takes a vector of `[x y z]`."
+  [dimensions & {:keys [center]
+                 :or {center true}}]
+
+  (let [[x y z] (if (vector? dimensions)
+                  dimensions
+                  [dimensions dimensions dimensions])]
+    (translate [0 0 (if center (/ z 2) 0)]
+               (cube x y z :center center))))
+
+
 ;; Dimensions are taken from the svg
 (defn place-screws
   "Places all `screw`s"
@@ -154,10 +168,11 @@
 
   (let [bottom-width 14
         bottom-height 6
-        top-width 8]
+        top-width 8
+        top-height 5]
   (hull
-    (translate [0 0 bottom-height] (cube top-width top-width 1))
-    (cube bottom-width bottom-width bottom-height))))
+   (translate [0 0 bottom-height] (my-cube [top-width top-width top-height]))
+    (my-cube [bottom-width bottom-width bottom-height]))))
 
 
 (defn switch-cutout
@@ -166,8 +181,8 @@
 
       :or {size :1u}}]
   (case size
-    :1u (cube 14 14 14)
-    :2uh (cube 14 33.5 14)))
+    :1u (my-cube 14)
+    :2uh (my-cube [14 33.5 14])))
 
 
 (defn keycap-angle
@@ -222,6 +237,7 @@
   [& {:keys [row
              size
              angle
+             height
              bottom-width
              bottom-height
              top-width
@@ -229,15 +245,16 @@
       :or {row 1
            size :1u
            angle (keycap-angle row)
+           height 6
            bottom-width (bottom-width size)
            bottom-height (bottom-height size)
            top-width (top-width size)
            top-height (top-height size)}}]
   (hull
-   (translate [0 1/2 6]
-                      (cube top-width top-height 1)))
-   (cube bottom-width bottom-height 1)))
+   (translate [0 1/2 height] ;; TODO Make variable
               (rotate [(to-radians angle) 0 0] ;; Rotate top face
+                      (my-cube [top-width top-height 1])))
+   (my-cube [bottom-width bottom-height 1])))
 
 
 (defn place-main-keys
@@ -304,10 +321,11 @@ If `key` is a function it is called with the keyword `row`=2."
 (def switches-cutout
   "Cutouts for all the switches."
 
-  (union
-    (place-thumb-keys switch-cutout
-                      (partial switch-cutout :size :2uh))
-    (place-main-keys switch-cutout)))
+  (translate [0 0 -0.01]
+             (union
+              (place-thumb-keys switch-cutout
+                                (partial switch-cutout :size :2uh))
+              (place-main-keys switch-cutout))))
 
 
 (def pcb-height 1.5)
@@ -348,7 +366,7 @@ If `key` is a function it is called with the keyword `row`=2."
       ;; TODO Make a bounding box function to calculate this cube
       ;; Cut off the bottom to shape it into a wedge
       (translate [-20 -100 -50]
-      (cube 170 100 50 :center false)))))
+                 (my-cube [170 100 50] :center false)))))
 
 
 ;; TODO make bottom and top not be mirrored of each other
@@ -384,10 +402,10 @@ If `key` is a function it is called with the keyword `row`=2."
      (translate [0 0 20] ;; TODO Make variable
                 (scale [1 1 -1] (dark-grey top-casing))
                 (light-grey
-                 (translate [0 0 0]
+                 (translate [0 0 -1.5] ;; TODO Make variable
                             switches))
                 (dark-grey
-                 (translate [0 0 6]
+                 (translate [0 0 8] ;; TODO make variable
                             keycaps))))))
 
 
