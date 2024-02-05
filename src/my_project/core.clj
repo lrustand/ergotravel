@@ -393,6 +393,7 @@ If `key` is a function it is called."
 
     (dark-grey
      (difference
+
       ;; The main body of the top-casing
       (my-extrude height outline)
 
@@ -409,16 +410,14 @@ If `key` is a function it is called."
   Not suitable for print, should be used for previewing."
 
   (union
-   (dark-grey bottom-casing)
+   bottom-casing
    (rotate [bottom-tilt 0 0]
      (translate [0 0 20] ;; TODO Make variable
-                (scale [1 1 -1] (dark-grey top-casing))
-                (light-grey
-                 (translate [0 0 -1.5] ;; TODO Make variable
-                            switches))
-                (dark-grey
-                 (translate [0 0 8] ;; TODO make variable
-                            keycaps))))))
+                (scale [1 1 -1] top-casing)
+                (translate [0 0 -1.5] ;; TODO Make variable
+                           switches)
+                (translate [0 0 8] ;; TODO make variable
+                           keycaps)))))
 
 
 (def exploded
