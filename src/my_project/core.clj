@@ -283,30 +283,37 @@ If `key` is a function it is called with the keywords
   "Given a shape `key`, places all the thumb keys.
 See `place-main-keys` for placement of the finger keys.
 
-If `key` is a function it is called with the keyword `row`=2."
+If `key` is a function it is called."
   [inner-key outer-key]
 
-  ;; Move both keys to correct row
-  (translate [9.45 -72.05] ;; TODO Make variables
-   ;; Inner thumb key
-   (translate [31.4475 0] ;; TODO Make variable
-     (rotate [0 0 (to-radians 10)]
-       (if (fn? inner-key)
-         (apply inner-key [:row 2])
-         inner-key)))
-   ;; Outer thumb key
-   (translate [3.4775 0] ;; TODO Make variable
-     (rotate [0 0 (to-radians 30)]
-       (if (fn? outer-key)
-         (apply outer-key [:row 2])
-         outer-key)))))
+  (let [inner-x 31.4475
+        outer-x 3.4775
+        inner-rot (/ PI 18)
+        outer-rot (/ PI 6)]
+
+    ;; Move both keys to correct row
+    (translate [9.45 -72.05] ;; TODO Make variables
+
+      ;; Inner thumb key
+      (translate [inner-x 0]
+                 (rotate [0 0 inner-rot]
+                         (if (fn? inner-key) ;; TODO Make a function of this
+                           (inner-key)
+                           inner-key)))
+
+      ;; Outer thumb key
+      (translate [outer-x 0]
+                 (rotate [0 0 outer-rot]
+                         (if (fn? outer-key)
+                           (outer-key)
+                           outer-key))))))
 
 
 (def keycaps
   "All the keycaps."
   (union
-    (place-thumb-keys (partial keycap :size :1.5u)
-                      (partial keycap :size :2uh))
+    (place-thumb-keys (partial keycap :row 2 :size :1.5u)
+                      (partial keycap :row 2 :size :2uh))
     (place-main-keys keycap)))
 
 
