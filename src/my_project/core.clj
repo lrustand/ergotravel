@@ -308,7 +308,9 @@ If `key` is a function it is called."
 (def pcb-height 1.5)
 (def pcb
   (grey
-   (my-extrude pcb-height outline)))
+   (difference
+    (my-extrude pcb-height outline)
+    screwholes)))
 
 
 (def bottom-tilt
