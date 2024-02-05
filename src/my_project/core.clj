@@ -27,8 +27,7 @@
 (defn place-screws
   "Places all `screw`s"
   [screw]
-  (map (fn [pos]
-         (translate pos screw))
+  (map (fn [pos] (translate pos screw))
 
        ;; Leftmost holes
        [[18.90 -25.77]
@@ -58,12 +57,12 @@
 
 
 (def standoffs
-  "Standoffs"
+  "All the standoffs"
   (place-screws standoff))
 
 
 (def screwholes
-  "Screwholes"
+  "All the screwholes"
   (place-screws screw))
 
 
@@ -172,13 +171,13 @@
 
 
 (defn keycap-angle
-  "Return the angle for the top face of keycap based on row"
+  "Return the angle for the top face of keycap based on `row`"
   [row]
   (nth [-10 -3 6] row))
 
 
 (defn top-width
-  "Return `top-width` for given U."
+  "Return `top-width` for given `size`."
   [size]
   (case size
     :1u 12
@@ -188,7 +187,7 @@
 
 
 (defn bottom-width
-  "Return `bottom-width` for given U."
+  "Return `bottom-width` for given `size`."
   [size]
   (case size
     :1u 16
@@ -198,7 +197,7 @@
 
 
 (defn bottom-height
-  "Return `bottom-height` for given U."
+  "Return `bottom-height` for given `size`."
   [size]
   (case size
     :1u 16
@@ -208,7 +207,7 @@
 
 
 (defn top-height
-  "Return `top-height` for given U."
+  "Return `top-height` for given `size`."
   [size]
   (case size
     :1u 12
@@ -219,7 +218,7 @@
 
 ;; TODO Make actual keycap profile
 (defn keycap
-  "Generate a keycap of the given size and row."
+  "Generate a keycap of the given `size` and `row`."
   [& {:keys [row
              size
              angle
@@ -236,9 +235,9 @@
            top-height (top-height size)}}]
   (hull
    (translate [0 1/2 6]
-              (rotate [(to-radians angle) 0 0]
                       (cube top-width top-height 1)))
    (cube bottom-width bottom-height 1)))
+              (rotate [(to-radians angle) 0 0] ;; Rotate top face
 
 
 (defn place-main-keys
@@ -257,7 +256,7 @@ If `key` is a function it is called with the keywords
               y (- (* ny key-spacing-y)
                    (get col-offsets nx))]]
 
-    (translate [x y 0]
+    (translate [x y]
       (if (fn? key)
         (apply key [:row (+ 2 ny) :col nx])
         key)))))
@@ -271,15 +270,15 @@ If `key` is a function it is called with the keyword `row`=2."
   [inner-key outer-key]
 
   ;; Move both keys to correct row
-  (translate [9.45 -72.05]
+  (translate [9.45 -72.05] ;; TODO Make variables
    ;; Inner thumb key
-   (translate [31.4475 0]
+   (translate [31.4475 0] ;; TODO Make variable
      (rotate [0 0 (to-radians 10)]
        (if (fn? inner-key)
          (apply inner-key [:row 2])
          inner-key)))
    ;; Outer thumb key
-   (translate [3.4775 0 0]
+   (translate [3.4775 0] ;; TODO Make variable
      (rotate [0 0 (to-radians 30)]
        (if (fn? outer-key)
          (apply outer-key [:row 2])
@@ -313,11 +312,12 @@ If `key` is a function it is called with the keyword `row`=2."
 
 (def pcb-height 1.5)
 (def pcb
-  (my-extrude pcb-height
-    outline))
+  (my-extrude pcb-height outline))
 
 
-(def bottom-tilt (to-radians 8))
+(def bottom-tilt
+  "How many degrees the bottom part of the case should be tilted."
+  (to-radians 8))
 
 
 (def bottom-casing
@@ -330,8 +330,7 @@ If `key` is a function it is called with the keyword `row`=2."
       ;; Rotate the whole bottom-casing
       (rotate [bottom-tilt 0 0]
         (difference
-         (my-extrude height
-           outline)
+         (my-extrude height outline)
 
          ;; The recessed area inside the case
          ;; with studs around the screwholes
@@ -358,10 +357,10 @@ If `key` is a function it is called with the keyword `row`=2."
 
   (let [height 5
         plate-thickness 1.5]
+
     (difference
      ;; The main body of the top-casing
-     (my-extrude height
-       outline)
+     (my-extrude height outline)
 
      ;; The recessed area inside the case
      ;; with studs around the screwholes
@@ -382,7 +381,7 @@ If `key` is a function it is called with the keyword `row`=2."
   (union
    (dark-grey bottom-casing)
    (rotate [bottom-tilt 0 0]
-     (translate [0 0 20]
+     (translate [0 0 20] ;; TODO Make variable
                 (scale [1 1 -1] (dark-grey top-casing))
                 (light-grey
                  (translate [0 0 0]
