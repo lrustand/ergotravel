@@ -21,5 +21,6 @@
   (let [[x y z] (if (vector? dimensions)
                   dimensions
                   [dimensions dimensions dimensions])]
+
     (translate [0 0 (if center (/ z 2) 0)]
                (cube x y z :center center))))

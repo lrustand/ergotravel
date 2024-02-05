@@ -14,6 +14,7 @@
 (defn place-screws
   "Places all `screw`s"
   [screw]
+
   (map (fn [pos] (translate pos screw))
 
        ;; Leftmost holes
@@ -57,6 +58,7 @@
 ;; Dimensions are taken from the svg
 (def outline
   "A 2D shape of the outline of the keyboard."
+
   (polygon [;; Upper right corner
             [133.20 -7.52]
             [132.57 -6.87]
@@ -91,7 +93,6 @@
             [133.20 -81.20]]))
 
 
-;; TODO Fix dimensions
 (def trrs-cutout
   "Cutout for the TRRS connector connecting the two halves."
 
@@ -122,6 +123,7 @@
 
 (def col-offsets
   "Y-axis offsets for each column."
+
   [19.725
    15.037
    12.664
@@ -318,7 +320,7 @@ If `key` is a function it is called."
   (union
    bottom-casing
    (rotate [bottom-tilt 0 0]
-     (translate [0 0 15] pcb)
+     (translate [0 0 15.001] pcb)
      (translate [0 0 (+ 20 pcb-height)] ;; TODO Make variable
                 (scale [1 1 -1] top-casing)
                 (translate [0 0 -1.5] ;; TODO Make variable
