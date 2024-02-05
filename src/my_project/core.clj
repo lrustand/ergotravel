@@ -1,6 +1,7 @@
 (ns my-project.core
   (:use [my-project.colors])
   (:use [my-project.utils])
+  (:use [my-project.keycaps])
 
   (:use [scad-clj.scad])
   (:use [scad-clj.model])
@@ -155,78 +156,6 @@
     :2uh (my-cube [14 33.5 14])))
 
 
-(defn keycap-angle
-  "Return the angle for the top face of keycap based on `row`"
-  [row]
-  (nth [-10 -3 6] row))
-
-
-(defn top-width
-  "Return `top-width` for given `size`."
-  [size]
-  (case size
-    :1u 12
-    :1.5u 20
-    :2u 35
-    :2uh 12))
-
-
-(defn bottom-width
-  "Return `bottom-width` for given `size`."
-  [size]
-  (case size
-    :1u 16
-    :1.5u 24
-    :2u 35
-    :2uh 16))
-
-
-(defn bottom-height
-  "Return `bottom-height` for given `size`."
-  [size]
-  (case size
-    :1u 16
-    :1.5u 16
-    :2u 16
-    :2uh 35))
-
-
-(defn top-height
-  "Return `top-height` for given `size`."
-  [size]
-  (case size
-    :1u 12
-    :1.5u 12
-    :2u 12
-    :2uh 30))
-
-
-;; TODO Make actual keycap profile
-(defn keycap
-  "Generate a keycap of the given `size` and `row`."
-  [& {:keys [row
-             size
-             angle
-             height
-             bottom-width
-             bottom-height
-             top-width
-             top-height]
-      :or {row 1
-           size :1u
-           angle (keycap-angle row)
-           height 6
-           bottom-width (bottom-width size)
-           bottom-height (bottom-height size)
-           top-width (top-width size)
-           top-height (top-height size)}}]
-  (hull
-   (translate [0 1/2 height] ;; TODO Make variable
-              (rotate [(to-radians angle) 0 0] ;; Rotate top face
-                      (my-cube [top-width top-height 1])))
-   (my-cube [bottom-width bottom-height 1])))
-
-
 (defn place-main-keys
   "Given a shape `key`, places all the main finger keys.
 See `place-thumb-keys` for placement of the thumb keys.
@@ -279,16 +208,18 @@ If `key` is a function it is called."
                            outer-key))))))
 
 
-(def keycaps
+(def all-keycaps
   "All the keycaps."
+
   (dark-grey
-    (place-thumb-keys (partial keycap :row 2 :size :1.5u)
-                      (partial keycap :row 2 :size :2uh))
+    (place-thumb-keys (partial keycap :row 13 :size :1.5u)
+                      (partial keycap :row 41 :size :2uh))
     (place-main-keys keycap)))
 
 
 (def switches
   "All the switches."
+
   (union
     (place-thumb-keys switch
                       switch)
@@ -391,7 +322,7 @@ If `key` is a function it is called."
                 (translate [0 0 -1.5] ;; TODO Make variable
                            switches)
                 (translate [0 0 8] ;; TODO make variable
-                           keycaps)))))
+                           all-keycaps)))))
 
 
 (def exploded
@@ -400,7 +331,7 @@ If `key` is a function it is called."
   (union
    bottom-casing
    (translate [0 1 0] (scale [1 -1 1] top-casing))
-   (translate [-10 0] (scale [-1 1 1] keycaps))))
+   (translate [-10 0] (scale [-1 1 1] all-keycaps))))
 
 
 (def out
@@ -409,8 +340,15 @@ If `key` is a function it is called."
    assembled))
 
 
+(def scad-libraries
+  (list
+    (scad-clj.model/use "scad-libraries/PseudoMakeMeKeyCapProfiles/MX_DES_Standard.scad")))
+
+
+
 (defn -main
   "Converts the shape defined in `out` to openscad and saves it to `ergotravel.scad`"
   [& args]
   (spit "ergotravel.scad"
-        (write-scad out)))
+        (write-scad scad-libraries out)))
+
