@@ -416,6 +416,15 @@ If `key` is a function it is called."
                             keycaps))))))
 
 
+(def exploded
+  "All the printable parts laid out side by side."
+
+  (union
+   bottom-casing
+   (translate [0 1] (scale [1 -1 1] top-casing))
+   (translate [-10 0] (scale [-1 1 1] keycaps))))
+
+
 (def out
   "The shape to render."
   (union
