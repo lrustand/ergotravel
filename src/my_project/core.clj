@@ -345,6 +345,16 @@ If `key` is a function it is called."
   (to-radians 8))
 
 
+(defn recess-cutout
+  "The recessed area inside the case with studs around the screwholes"
+  [height]
+
+  (let [border-width 1]
+    (difference
+     (my-extrude height (offset (- border-width) outline))
+     standoffs)))
+
+
 (def bottom-casing
   "The bottom part of the casing, with all cutouts."
 
@@ -353,20 +363,17 @@ If `key` is a function it is called."
 
     (dark-grey
      (difference
+
       ;; Rotate the whole bottom-casing
       (rotate [bottom-tilt 0 0]
         (difference
          (my-extrude height outline)
 
-         ;; The recessed area inside the case
-         ;; with studs around the screwholes
          (translate [0 0 (+ height 0.01)]
 
            ;; Flip recess and cutouts upside down (make height negative)
            (scale [1 1 -1]
-             (difference
-               (my-extrude recess (offset -1 outline))
-               standoffs)
+             (recess-cutout recess)
              arduino-cutout
              trrs-cutout)
            screwholes)))
@@ -389,12 +396,8 @@ If `key` is a function it is called."
       ;; The main body of the top-casing
       (my-extrude height outline)
 
-      ;; The recessed area inside the case
-      ;; with studs around the screwholes
       (translate [0 0 plate-thickness]
-                 (difference
-                  (my-extrude height (offset -1 outline))
-                  standoffs))
+                 (recess-cutout height))
 
       ;; Cutouts
       switches-cutout
