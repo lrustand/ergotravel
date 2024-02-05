@@ -1,5 +1,6 @@
 (ns my-project.utils
-  (:use [scad-clj.model]))
+  (:require [scad-clj.model :refer [extrude-linear translate cube]])
+  (:refer-clojure :exclude [use include]))
 
 
 (defn my-extrude

@@ -3,9 +3,11 @@
   (:use [my-project.utils])
   (:use [my-project.keycaps])
 
-  (:use [scad-clj.scad])
   (:use [scad-clj.model])
-  (:use [clojure.math]))
+  (:require [scad-clj.scad :refer [write-scad]])
+  (:require [clojure.math :refer [PI to-radians]])
+
+  (:refer-clojure :exclude [use include]))
 
 
 ;; Dimensions are taken from the svg

@@ -1,5 +1,6 @@
 (ns my-project.colors
-  (:use [scad-clj.model]))
+  (:require [scad-clj.model :refer [color]])
+  (:refer-clojure :exclude [use include]))
 
 
 (def red (partial color [1 0 0]))
