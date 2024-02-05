@@ -311,7 +311,7 @@ If `key` is a function it is called."
 
 (def keycaps
   "All the keycaps."
-  (union
+  (dark-grey
     (place-thumb-keys (partial keycap :row 2 :size :1.5u)
                       (partial keycap :row 2 :size :2uh))
     (place-main-keys keycap)))
@@ -351,7 +351,8 @@ If `key` is a function it is called."
   (let [height 15 ;; Number pulled out of arse
         recess 1.5]
 
-    (difference
+    (dark-grey
+     (difference
       ;; Rotate the whole bottom-casing
       (rotate [bottom-tilt 0 0]
         (difference
@@ -373,7 +374,7 @@ If `key` is a function it is called."
       ;; TODO Make a bounding box function to calculate this cube
       ;; Cut off the bottom to shape it into a wedge
       (translate [-20 -100 -50]
-                 (my-cube [170 100 50] :center false)))))
+                 (my-cube [170 100 50] :center false))))))
 
 
 ;; TODO make bottom and top not be mirrored of each other
@@ -383,20 +384,21 @@ If `key` is a function it is called."
   (let [height 5
         plate-thickness 1.5]
 
-    (difference
-     ;; The main body of the top-casing
-     (my-extrude height outline)
+    (dark-grey
+     (difference
+      ;; The main body of the top-casing
+      (my-extrude height outline)
 
-     ;; The recessed area inside the case
-     ;; with studs around the screwholes
-     (translate [0 0 plate-thickness]
-       (difference
-         (my-extrude height (offset -1 outline))
-         standoffs))
+      ;; The recessed area inside the case
+      ;; with studs around the screwholes
+      (translate [0 0 plate-thickness]
+                 (difference
+                  (my-extrude height (offset -1 outline))
+                  standoffs))
 
-     ;; Cutouts
-     switches-cutout
-     screwholes)))
+      ;; Cutouts
+      switches-cutout
+      screwholes))))
 
 
 (def assembled
