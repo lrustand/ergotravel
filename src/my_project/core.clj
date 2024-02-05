@@ -92,7 +92,7 @@
             [91.99 0.0]
 
             ;; Upper left corner
-            [3.10  0.0]
+            [3.10  0.00]
             [2.04 -0.19]
             [0.41 -1.55]
             [0.00 -2.55]
@@ -112,10 +112,10 @@
             [29.73 -84.31]
 
             ;; Bottom right corner
-            [130.09 -84.3]
+            [130.09 -84.30]
             [131.16 -84.12]
             [132.78 -82.75]
-            [133.20 -81.2]]))
+            [133.20 -81.20]]))
 
 
 ;; TODO Fix dimensions
@@ -152,7 +152,7 @@
   [19.725
    15.037
    12.664
-   10.31
+   10.310
    12.624
    34.303
    36.611])
@@ -287,7 +287,7 @@ If `key` is a function it is called."
   [inner-key outer-key]
 
   (let [inner-x 31.4475
-        outer-x 3.4775
+        outer-x  3.4775
         inner-rot (/ PI 18)
         outer-rot (/ PI 6)]
 
@@ -425,7 +425,7 @@ If `key` is a function it is called."
 
   (union
    bottom-casing
-   (translate [0 1] (scale [1 -1 1] top-casing))
+   (translate [0 1 0] (scale [1 -1 1] top-casing))
    (translate [-10 0] (scale [-1 1 1] keycaps))))
 
 
