@@ -337,7 +337,8 @@ If `key` is a function it is called."
 
 (def pcb-height 1.5)
 (def pcb
-  (my-extrude pcb-height outline))
+  (grey
+   (my-extrude pcb-height outline)))
 
 
 (def bottom-tilt
@@ -412,7 +413,8 @@ If `key` is a function it is called."
   (union
    bottom-casing
    (rotate [bottom-tilt 0 0]
-     (translate [0 0 20] ;; TODO Make variable
+     (translate [0 0 15] pcb)
+     (translate [0 0 (+ 20 pcb-height)] ;; TODO Make variable
                 (scale [1 1 -1] top-casing)
                 (translate [0 0 -1.5] ;; TODO Make variable
                            switches)
