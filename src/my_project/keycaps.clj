@@ -50,27 +50,16 @@
     :2uh 30))
 
 
-;; TODO Make actual keycap profile
 (defn keycap
   "Generate a keycap of the given `size` and `row`."
   [& {:keys [row
              col
              size
-             angle
              height]
       :or {row 1
            col 0
            size :1u
-           angle (keycap-angle row)
            height 6}}]
 
-  (let [bottom-width (bottom-width size)
-        bottom-height (bottom-height size)
-        top-width (top-width size)
-        top-height (top-height size)]
-
-    (hull
-     (translate [0 1/2 height] ;; TODO Make variable
-                (rotate [(to-radians angle) 0 0] ;; Rotate top face
-                        (my-cube [top-width top-height 1])))
-     (my-cube [bottom-width bottom-height 1]))))
+;;module keycap(keyID = 0, cutLen = 0, visualizeDish = false, rossSection = false, Dish = true, Stem = false, crossSection = true,Legends = false, homeDot = false, Stab = 0) {
+(scad-clj.model/call "keycap" row 0 false false true true false false false false 0))

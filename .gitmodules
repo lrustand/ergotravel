@@ -1,0 +1,4 @@
+[submodule "scad-libraries/PseudoMakeMeKeyCapProfiles"]
+	path = scad-libraries/PseudoMakeMeKeyCapProfiles
+	url = git@github.com:lrustand/PseudoMakeMeKeyCapProfiles
+	branch = master
