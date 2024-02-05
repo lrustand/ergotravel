@@ -122,12 +122,12 @@
 (def trrs-cutout
   "Cutout for the TRRS connector connecting the two halves."
 
-  (my-extrude 5
+  (my-extrude 6
     (polygon
-     [[-0.01 -1.33]
-      [-0.01 -9.85]
-      [ 18.8 -9.85]
-      [ 18.8 -1.33]])))
+     [[-0.01 -2.40]
+      [-0.01 -9.87]
+      [18.85 -9.87]
+      [18.85 -2.40]])))
 
 
 ;; Might not be needed
