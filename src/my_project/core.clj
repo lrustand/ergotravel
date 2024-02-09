@@ -344,7 +344,7 @@ If `key` is a function it is called."
                 (scale [1 1 -1] top-casing)
                 (translate [0 0 -1.5] ;; TODO Make variable
                            switches)
-                (translate [0 0 8] ;; TODO make variable
+                (translate [0 0 6] ;; TODO make variable
                            all-keycaps)))))
 
 
