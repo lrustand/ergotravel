@@ -104,9 +104,26 @@
       [18.85 -2.40]])))
 
 
-;; Might not be needed
-(def usb-cutout)
-(def battery-cutout)
+;; TODO Measure some batteries and make a few variations
+(def battery-cutout
+  (my-extrude 8
+    (intersection
+      (offset -1 outline)
+      (polygon
+       [[150 -40]
+        [ 82 -40]
+        [ 82 0]
+        [150 0]]))))
+
+(def battery-cutout-2
+  (my-extrude 8
+    (intersection
+      (offset -1 outline)
+      (polygon
+       [[50 -40]
+        [21 -40]
+        [21 0]
+        [50 0]]))))
 
 
 ;; TODO fix X pos + width
@@ -283,6 +300,8 @@ If `key` is a function it is called."
            (scale [1 1 -1]
              (recess-cutout recess)
              arduino-cutout
+             battery-cutout
+             battery-cutout-2
              trrs-cutout)
            screwholes)))
 
