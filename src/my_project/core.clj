@@ -279,6 +279,27 @@ If `key` is a function it is called."
      (my-extrude height (offset (- border-width) outline))
      standoffs)))
 
+(def rubber-feet-cutout
+  (map (fn [pos]
+         (translate pos
+           (binding [*fn* 100]
+             (cylinder 2.5 1.5)))) ;; TODO Measure diameter of feet
+
+        ;; Upper right corner
+       [[129 -11]
+
+        ;; Upper left corner
+        [5  -5.00]
+
+        ;; Thumb upper corner
+        [1 -62]
+
+        ;; Thumb bottom corner
+        [16 -88]
+
+        ;; Bottom right corner
+        [129 -81]]))
+
 
 (def bottom-casing
   "The bottom part of the casing, with all cutouts."
@@ -304,6 +325,8 @@ If `key` is a function it is called."
              battery-cutout-2
              trrs-cutout)
            screwholes)))
+
+      rubber-feet-cutout
 
       ;; TODO Make a bounding box function to calculate this cube
       ;; Cut off the bottom to shape it into a wedge
@@ -340,6 +363,7 @@ If `key` is a function it is called."
    bottom-casing
    (rotate [bottom-tilt 0 0]
      (translate [0 0 15.001] pcb)
+     (translate [0 0 15] (scale [1 1 -1] arduino))
      (translate [0 0 (+ 20 pcb-height)] ;; TODO Make variable
                 (scale [1 1 -1] top-casing)
                 (translate [0 0 -1.5] ;; TODO Make variable
