@@ -5,7 +5,8 @@
 
 (def red (partial color [1 0 0]))
 (def green (partial color [0 1 0]))
-(def blue (partial color [0 0 1]))
+;;(def blue (partial color [0.19 0.525 0.627]))
+(def blue (partial color [40/255 90/255 95/255]))
 (def purple (partial color [1 0 1]))
 (def black (partial color [0 0 0]))
 (def white (partial color [1 1 1]))
