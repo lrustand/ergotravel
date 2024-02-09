@@ -126,16 +126,15 @@
         [50 0]]))))
 
 
-;; TODO fix X pos + width
 (def arduino-cutout
   "Cutout for the microcontroller."
 
   (my-extrude 100
     (polygon
-     [[73.955 -40.83]
-      [55.395 -40.83]
-      [55.395 4.3]
-      [73.955 4.3]])))
+     [[77 -35]
+      [56 -35]
+      [56 4.3]
+      [77 4.3]])))
 
 
 ;; TODO Fix position
