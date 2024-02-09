@@ -61,5 +61,7 @@
            size :1u
            height 6}}]
 
+  (let [height (if (< 2 col 5) 0.8 1)]
 ;;module keycap(keyID = 0, cutLen = 0, visualizeDish = false, rossSection = false, Dish = true, Stem = false, crossSection = true,Legends = false, homeDot = false, Stab = 0) {
-(scad-clj.model/call "keycap" row 0 false false true true false false false false 0))
+    (scad-clj.model/scale [1 1 height]
+      (scad-clj.model/call "keycap" row 0 false false true true false false false false 0))))
