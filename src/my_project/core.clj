@@ -193,11 +193,21 @@
 (defn switch-cutout
   "Cutout for switch."
   [& {:keys [size]
-
       :or {size :1u}}]
-  (case size
-    :1u (my-cube 14)
-    :2uh (my-cube [14 33.5 14])))
+
+  (let [tool-radius 1.5
+        switch-width 14
+        half-width (/ switch-width 2)
+        height 100
+        corner (translate [half-width (- half-width tool-radius)]
+                          (binding [*fn* 100]
+                            (cylinder tool-radius height)))]
+    (case size
+      :1u (union (my-cube [switch-width switch-width height])
+                 (for [x [-1 1]
+                       y [-1 1]]
+                   (scale [x y 1] corner)))
+      :2uh (my-cube [switch-width 33.5 height]))))
 
 
 (defn place-main-keys
