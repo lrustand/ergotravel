@@ -335,6 +335,13 @@ If `key` is a function it is called."
         [129 -81]]))
 
 
+;; TODO Fix correct positioning
+(def reset-cutout
+  (translate [95 -4]
+  (binding [*fn* 100]
+    (cylinder 2 10))))
+
+
 (def bottom-casing
   "The bottom part of the casing, with all cutouts."
 
@@ -386,6 +393,7 @@ If `key` is a function it is called."
 
       ;; Cutouts
       switches-cutout
+      reset-cutout
       screwholes))))
 
 
