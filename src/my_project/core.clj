@@ -180,9 +180,14 @@
         bottom-height 6
         top-width 8
         top-height 5]
-  (hull
-   (translate [0 0 bottom-height] (my-cube [top-width top-width top-height]))
-    (my-cube [bottom-width bottom-width bottom-height]))))
+
+    ;; Real Cherry MX switch
+    (translate [0 0 14.5] (scad-clj.model/import "stl/switch_mx.stl"))))
+
+    ;; Simplified switch
+;;  (hull
+;;   (translate [0 0 bottom-height] (my-cube [top-width top-width top-height]))
+;;    (my-cube [bottom-width bottom-width bottom-height]))))
 
 
 (defn switch-cutout
