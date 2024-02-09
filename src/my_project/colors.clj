@@ -12,4 +12,4 @@
 (def white (partial color [1 1 1]))
 (def grey (partial color [0.5 0.5 0.5]))
 (def dark-grey (partial color [0.25 0.25 0.25]))
-(def light-grey (partial color [0.75 0.75 0.75 0.4]))
+(def light-grey (partial color [0.75 0.75 0.75]))

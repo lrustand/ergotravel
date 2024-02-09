@@ -241,10 +241,11 @@ If `key` is a function it is called."
 (def switches
   "All the switches."
 
+  (light-grey
   (union
     (place-thumb-keys switch
                       switch)
-    (place-main-keys switch)))
+    (place-main-keys switch))))
 
 
 (def switches-cutout
