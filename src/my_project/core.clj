@@ -138,6 +138,25 @@
       [73.955 4.3]])))
 
 
+;; TODO Fix position
+;; Position good enough for casing,
+;; but not accurate for PCB
+(def arduino
+  (union
+;;    (black
+;;      (translate [65 0 0.1]
+;;        (rotate [0 0 (/ PI 2)] (scad-clj.model/import "stl/arduino_header.stl"))))
+    (blue
+      (translate [66.5 0]
+        (rotate [0 0 (/ PI 2)] (scad-clj.model/import "stl/arduino.stl"))))))
+;;    (my-extrude 1.5
+;;      (polygon
+;;       [[73.955 -40.83]
+;;        [55.395 -40.83]
+;;        [55.395 0]
+;;        [73.955 0]]))))
+
+
 (def col-offsets
   "Y-axis offsets for each column."
 
