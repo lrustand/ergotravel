@@ -9,6 +9,8 @@
 
   (:refer-clojure :exclude [use include]))
 
+(def ^:dynamic *tool-dia* 3)
+
 
 ;; Dimensions are taken from the svg
 (defn place-screws
@@ -195,7 +197,7 @@
   [& {:keys [size]
       :or {size :1u}}]
 
-  (let [tool-radius 1.5
+  (let [tool-radius (/ *tool-dia* 2)
         switch-width 14
         half-width (/ switch-width 2)
         height 100
@@ -219,6 +221,7 @@ If `key` is a function it is called with the keywords
   [key]
 
   (translate [9.45 0]
+  (doall
   (for [nx (range 0 7)
         ny (range -2 1)
         :when (not (= [nx ny] [0 -2])) ;; Don't do key at [0,-2]
@@ -229,7 +232,7 @@ If `key` is a function it is called with the keywords
     (translate [x y]
       (if (fn? key)
         (apply key [:row (+ 2 ny) :col nx])
-        key)))))
+        key))))))
 
 
 (defn place-thumb-keys
@@ -281,13 +284,14 @@ If `key` is a function it is called."
     (place-main-keys switch))))
 
 
-(def switches-cutout
+(defn switches-cutout
   "Cutouts for all the switches."
+  []
 
   (translate [0 0 -0.01]
              (union
-              (place-thumb-keys switch-cutout
-                                (partial switch-cutout :size :2uh))
+              (place-thumb-keys switch-cutout switch-cutout)
+                                ;;(partial switch-cutout :size :2uh))
               (place-main-keys switch-cutout))))
 
 
@@ -392,7 +396,7 @@ If `key` is a function it is called."
                  (recess-cutout height))
 
       ;; Cutouts
-      switches-cutout
+      (switches-cutout)
       reset-cutout
       screwholes))))
 
