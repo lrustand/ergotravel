@@ -403,6 +403,24 @@ If `key` is a function it is called."
       screwholes))))
 
 
+(def top-foam-insert
+  (grey
+   (difference
+    (recess-cutout 1.5)
+    (binding [*tool-dia* 0]
+      (switches-cutout))
+    reset-cutout)))
+
+
+(def bottom-foam-insert
+  (grey
+   (difference
+    (recess-cutout 1.5)
+    (translate [0 0 -0.1]
+      arduino-cutout
+      trrs-cutout))))
+
+
 (def assembled
   "Fully assembled keyboard with all parts installed.
   Not suitable for print, should be used for previewing."
