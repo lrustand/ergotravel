@@ -106,7 +106,7 @@
       [18.85 -2.40]])))
 
 
-;; TODO Measure some batteries and make a few variations
+;; TODO: Measure some batteries and make a few variations
 (def battery-cutout
   (my-extrude 8
     (intersection
@@ -139,7 +139,7 @@
       [77 4.3]])))
 
 
-;; TODO Fix position
+;; TODO: Fix position
 ;; Position good enough for casing,
 ;; but not accurate for PCB
 (def arduino
@@ -248,12 +248,12 @@ If `key` is a function it is called."
         outer-rot (/ PI 6)]
 
     ;; Move both keys to correct row
-    (translate [9.45 -72.05] ;; TODO Make variables
+    (translate [9.45 -72.05] ;; TODO: Make variables
 
       ;; Inner thumb key
       (translate [inner-x 0]
                  (rotate [0 0 inner-rot]
-                         (if (fn? inner-key) ;; TODO Make a function of this
+                         (if (fn? inner-key) ;; TODO: Make a function of this
                            (inner-key)
                            inner-key)))
 
@@ -317,17 +317,18 @@ If `key` is a function it is called."
      (my-extrude height (offset (- border-width) outline))
      standoffs)))
 
+
 (def rubber-feet-cutout
   (map (fn [pos]
          (translate pos
            (binding [*fn* 100]
-             (cylinder 2.5 1.5)))) ;; TODO Measure diameter of feet
+             (cylinder 2.5 1.5)))) ;; TODO: Measure diameter of feet
 
         ;; Upper right corner
        [[129 -11]
 
         ;; Upper left corner
-        [5  -5.00]
+        [5  -5]
 
         ;; Thumb upper corner
         [1 -62]
@@ -339,7 +340,7 @@ If `key` is a function it is called."
         [129 -81]]))
 
 
-;; TODO Fix correct positioning
+;; TODO: Fix correct positioning
 (def reset-cutout
   (translate [95 -4]
   (binding [*fn* 100]
@@ -373,13 +374,13 @@ If `key` is a function it is called."
 
       rubber-feet-cutout
 
-      ;; TODO Make a bounding box function to calculate this cube
+      ;; TODO: Make a bounding box function to calculate this cube
       ;; Cut off the bottom to shape it into a wedge
       (translate [-20 -100 -50]
                  (my-cube [170 100 50] :center false))))))
 
 
-;; TODO make bottom and top not be mirrored of each other
+;; TODO: make bottom and top not be mirrored of each other
 (def top-casing
   "The top part of the casing, with all cutouts."
 
@@ -410,11 +411,11 @@ If `key` is a function it is called."
    (rotate [bottom-tilt 0 0]
      (translate [0 0 15.001] pcb)
      (translate [0 0 15] (scale [1 1 -1] arduino))
-     (translate [0 0 (+ 20 pcb-height)] ;; TODO Make variable
+     (translate [0 0 (+ 20 pcb-height)] ;; TODO: Make variable
                 (scale [1 1 -1] top-casing)
-                (translate [0 0 -1.5] ;; TODO Make variable
+                (translate [0 0 -1.5] ;; TODO: Make variable
                            switches)
-                (translate [0 0 6] ;; TODO make variable
+                (translate [0 0 6] ;; TODO: make variable
                            all-keycaps)))))
 
 
