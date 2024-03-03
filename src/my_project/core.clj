@@ -201,8 +201,9 @@
         switch-width 14
         half-width (/ switch-width 2)
         height 100
-        corner (translate [half-width (- half-width tool-radius)]
-                          (binding [*fn* 100]
+        corner (translate [(- half-width (/ tool-radius (clojure.math/sqrt 2)))
+                           (- half-width (/ tool-radius (clojure.math/sqrt 2)))]
+                          (binding [*fn* 100]          ;TODO: /sqrt
                             (cylinder tool-radius height)))]
     (case size
       :1u (union (my-cube [switch-width switch-width height])
